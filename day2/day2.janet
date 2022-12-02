@@ -42,9 +42,9 @@
     :main (* (some (group :round)) -1)})
 
 (defn calculate-total-score [game-scores]
-  (sum (mapcat (fn [[_ _ free-points win-loss-points]]
-                 (+ free-points win-loss-points))
-               game-scores)))
+  (sum (map (fn [[_ _ free-points win-loss-points]]
+              (+ free-points win-loss-points))
+            game-scores)))
 
 (defn main []
   (let [content (slurp "./day2/input.txt")
