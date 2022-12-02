@@ -31,7 +31,7 @@
     :round-points (/ (* (-> :elf-turn) (-> :my-turn)) ,win-loss-draw)
     :my-free-points (/ (-> :my-turn) ,inc)
     :round (* :elf " " :me :my-free-points :round-points "\n")
-    :main (* (some (* (group :round))) -1)})
+    :main (* (some (group :round)) -1)})
 
 (def peg-2
   ~{:me (/ (<- (range "XZ")) ,rps-converter :my-turn)
@@ -39,7 +39,7 @@
     :round-points (/ (* (-> :elf-turn) (-> :my-turn)) ,win-loss-draw-2)
     :my-free-points (/ (* (-> :my-turn) (-> :elf-turn)) ,my-free-points-2)
     :round (* :elf " " :me :my-free-points :round-points "\n")
-    :main (* (some (* (group :round))) -1)})
+    :main (* (some (group :round)) -1)})
 
 (defn calculate-total-score [game-scores]
   (sum (mapcat (fn [[_ _ free-points win-loss-points]]
