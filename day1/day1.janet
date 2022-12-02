@@ -1,4 +1,3 @@
-
 (def elf-peg
   ~{:calories (* (number :d+) "\n")
     :elf (+ (group (some :calories)) "\n")
