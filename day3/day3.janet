@@ -2,20 +2,18 @@
   (->> s
        (string/bytes)
        (reduce (fn [acc ch]
-                 (let [char (string/from-bytes ch)
-                       existing (get acc char)]
+                 (let [existing (get acc ch)]
                    (if (not existing)
-                     (set (acc char) 1)
-                     (set (acc char) (inc existing)))
+                     (set (acc ch) 1)
+                     (set (acc ch) (inc existing)))
                    acc))
                @{})
        (table/to-struct)))
 
 (defn gen-ascii-score [ch]
-  (let [[ascii-num] (string/bytes ch)]
-    (if (> ascii-num 96)
-      (- ascii-num 96)
-      (- ascii-num 38))))
+  (if (> ch 96)
+    (- ch 96)
+    (- ch 38)))
 
 (defn find-common-ch [char-set & char-sets]
   (var common-ch nil)
