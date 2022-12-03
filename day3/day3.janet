@@ -1,51 +1,50 @@
 (defn create-set [s]
-  (var acc @{})
-  (loop [ch :in s]
-    (let [char (string/from-bytes ch)
-          existing (get acc char)]
-      (if (not existing)
-        (set (acc char) 1)
-        (set (acc char) (inc existing)))))
-  acc)
+  (->> s
+       (string/bytes)
+       (reduce (fn [acc ch]
+                 (let [char (string/from-bytes ch)
+                       existing (get acc char)]
+                   (if (not existing)
+                     (set (acc char) 1)
+                     (set (acc char) (inc existing)))
+                   acc))
+               @{})
+       (table/to-struct)))
 
-(defn score-it [ch]
+(defn gen-ascii-score [ch]
   (let [[ascii-num] (string/bytes ch)]
     (if (> ascii-num 96)
       (- ascii-num 96)
       (- ascii-num 38))))
 
+(defn find-common-ch [char-set & char-sets]
+  (var common-ch nil)
+  (eachk ch char-set
+    (when (every? (map |(get $ ch) char-sets))
+      (set common-ch ch)
+      (break)))
+  common-ch)
+
 (defn half-it [s]
   (let [half-point (/ (length s) 2)
-        first-half (-> (string/slice s 0 half-point)
-                       (create-set))
-        second-half (-> (string/slice s half-point -1)
-                        (create-set))]
-    (var common-ch nil)
-    (loop [ch :keys first-half]
-      (when (get second-half ch)
-        (set common-ch ch)
-        (break)))
-    (score-it common-ch)))
+        first-half (string/slice s 0 half-point)
+        second-half (string/slice s half-point -1)]
+    [first-half second-half]))
+
+(defn score-it [rucksack-strs]
+  (let [unique-chs (map (partial create-set) rucksack-strs)]
+    (-> (find-common-ch ;unique-chs)
+        (gen-ascii-score))))
 
 (def peg
-  ~{:rucksack (* (/ (<- (some (range "az" "AZ"))) ,half-it) "\n")
+  ~{:rucksack (* (/ (<- (some (range "az" "AZ"))) ,|(-> $
+                                                        (half-it)
+                                                        (score-it))) "\n")
     :main (* (some :rucksack) -1)})
 
 (def peg-2
   ~{:rucksack (repeat 3 (* (<- (some (range "az" "AZ"))) "\n"))
-    :main (* (some (/ (group :rucksack) ,(fn [[s1 s2 s3]]
-                                           (let [s1-unique (create-set s1)
-                                                 s2-unique (create-set s2)
-                                                 s3-unique (create-set s3)]
-                                             (var common-ch nil)
-                                             (loop [k :keys s1-unique]
-                                               (when (and (get s1-unique k)
-                                                          (get s2-unique k)
-                                                          (get s3-unique k))
-                                                 (set common-ch k)
-                                                 (break)))
-                                             (score-it common-ch)))))
-             -1)})
+    :main (* (some (/ (group :rucksack) ,score-it)) -1)})
 
 (defn main []
   (let [contents (slurp "./day3/input.txt")
