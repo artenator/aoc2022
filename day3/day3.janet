@@ -1,9 +1,9 @@
 (defn create-set [s]
   (var acc @{})
   (loop [ch :in s]
-    (if (not (get acc ch))
+    (if (not (get acc (string/from-bytes ch)))
       (set (acc (string/from-bytes ch)) 1)
-      (set (acc (string/from-bytes ch)) (inc (get acc ch 1)))))
+      (set (acc (string/from-bytes ch)) (inc (get acc (string/from-bytes ch))))))
   acc)
 
 (defn score-it [ch]
