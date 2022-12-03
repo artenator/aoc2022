@@ -3,7 +3,7 @@
   (loop [ch :in s]
     (if (not (get acc ch))
       (set (acc (string/from-bytes ch)) 1)
-      (set (acc (string/from-bytes ch)) (inc (get acc ch) 1))))
+      (set (acc (string/from-bytes ch)) (inc (get acc ch 1)))))
   acc)
 
 (defn score-it [ch]
@@ -46,7 +46,7 @@
              -1)})
 
 (defn main []
-  (let [contents (slurp "./input.txt")
+  (let [contents (slurp "./day3/input.txt")
         compartments (peg/match peg contents)
         compartments-2 (peg/match peg-2 contents)]
     (print "priority sum 1: " (sum compartments))
