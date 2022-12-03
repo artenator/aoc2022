@@ -4,8 +4,8 @@
     (let [char (string/from-bytes ch)
           existing (get acc char)]
       (if (not existing)
-       (set (acc char) 1)
-       (set (acc char) (inc existing)))))
+        (set (acc char) 1)
+        (set (acc char) (inc existing)))))
   acc)
 
 (defn score-it [ch]
