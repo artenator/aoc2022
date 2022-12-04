@@ -15,7 +15,7 @@
     :main (* (some (group (/ (*  :range "," :range "\n") ,has-coverage-2))) -1)})
 
 (defn main []
-  (let [contents (slurp "./input.txt")
+  (let [contents (slurp "./day4/input.txt")
         ranges (peg/match peg contents)
         ranges-2 (peg/match peg-2 contents)]
     (print "1: " (length (filter (comp (partial = true) first) ranges)))
