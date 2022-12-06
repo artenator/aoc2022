@@ -33,7 +33,7 @@
 (def pattern
   ~{:stack-unit (* (+ (group (* (/ (column) ,|(/ (dec $) 4)) "[" (<- :a) "]"))
                       (* " " :d (? " "))
-                      (repeat 3 " "))
+                      (3 " "))
                    (? (set "\n ")))
     :stacks (* (group (some :stack-unit)))
     :instructions (group
