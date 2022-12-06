@@ -1,13 +1,7 @@
 (defn create-set [s]
   (->> s
        (string/bytes)
-       (reduce (fn [acc ch]
-                 (let [existing (get acc ch)]
-                   (if (not existing)
-                     (set (acc ch) 1)
-                     (set (acc ch) (inc existing)))
-                   acc))
-               @{})
+       (frequencies)
        (table/to-struct)))
 
 (defn gen-ascii-score [ch]

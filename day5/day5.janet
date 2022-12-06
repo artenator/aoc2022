@@ -1,9 +1,7 @@
 (defn build-stacks [stack-pairs]
   (reduce (fn [acc [col val]]
             (if-let [stack (get acc col)]
-              (do
-                (array/push stack val)
-                acc)
+              (update acc col |(array/push $ val))
               (do
                 (set (acc col) @[val])
                 acc)))
@@ -34,7 +32,7 @@
 (defn get-tops-of-stacks [stacks]
   (map last (values stacks)))
 
-(defn pattern [handler]
+(def pattern
   ~{:stack-unit (* (+ (group (* (/ (column) ,|(/ (dec $) 4)) "[" (<- :a) "]"))
                       (* " " :d (? " "))
                       (repeat 3 " "))
@@ -45,14 +43,20 @@
                                  " from " (* (constant :from) (/ (number :d+) ,dec))
                                  " to " (* (constant :to) (/ (number :d+) ,dec)) "\n")
                               ,struct)))
-    :main (* (/ :stacks ,build-stacks :built-stacks)
+    :main (* (/ :stacks ,build-stacks)
              "\n"
-             (/ (* :instructions (-> :built-stacks)) ,handler)
+             :instructions
              -1)})
 
 (defn main []
   (let [contents (slurp "./day5/input.txt")
-        [_ sol] (peg/match (pattern process-stacks) contents)
-        [_ sol-2] (peg/match (pattern process-stacks-2) contents)]
-    (print "part 1: " (string/join (get-tops-of-stacks sol) ""))
-    (print "part 2: " (string/join (get-tops-of-stacks sol-2) ""))))
+        [p1 inst1] (peg/match pattern contents)
+        [p2 inst2] (peg/match pattern contents)]
+    (print "part 1: " (string/join (->> p1
+                                        (process-stacks inst1)
+                                        (get-tops-of-stacks))
+                                   ""))
+    (print "part 2: " (string/join (->> p2
+                                        (process-stacks-2 inst2)
+                                        (get-tops-of-stacks))
+                                   ""))))
