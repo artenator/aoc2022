@@ -1,7 +1,8 @@
+(import ../utils/timer)
+
 (defn capture-if-unique [num-of-chars s cur-pos]
   (when (-> s
-            (frequencies)
-            (keys)
+            (distinct)
             (length)
             (= num-of-chars))
     cur-pos))
@@ -19,5 +20,7 @@
 
 (defn main []
   (let [contents (slurp "./day6/input.txt")]
-    (printf "part 1: %Q" (peg/match (pattern 4) contents))
-    (printf "part 2: %Q" (peg/match (pattern 14) contents))))
+    (printf "part 1: %Q" (timer/with-timer
+                           (peg/match (pattern 4) contents)))
+    (printf "part 2: %Q" (timer/with-timer
+                           (peg/match (pattern 14) contents)))))
