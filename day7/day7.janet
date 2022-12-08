@@ -23,13 +23,13 @@
     :cd-out ""
     :out (+ :ls-out :cd-out)
     :cd (* "cd " (/ (*  (+ (-> :cur-dir) (<- "")) (group (some (<- (* (? "/") (? (to "\n")))))))
-                       ,move-dirs
-                       :cur-dir))
+                    ,move-dirs
+                    :cur-dir))
     :ls (* "ls")
     :cmd (* "$ " (+ :cd :ls) "\n")
     :main (/ (* (some (+ :cmd :out)) -1) ,(fn [& matches]
-                                               (->> (array ;matches)
-                                                    (filter array?))))})
+                                            (->> (array ;matches)
+                                                 (filter array?))))})
 
 (defn add-to-directory [size tree dir-path]
   (update tree dir-path (fn [cur-size]
