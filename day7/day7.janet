@@ -13,17 +13,14 @@
         new-dir)
       (string cur-dir (when (not= cur-dir "/") "/") cur-move))))
 
-(defn move-dirs [cur-dir cur-moves]
-  (reduce move-dir cur-dir cur-moves))
-
 (def pattern
   ~{:file (* (number :d+) " " (<- (to "\n")))
     :dir (* "dir " :a+)
     :ls-out (group (* (-> :cur-dir) (group (some (*  (+ :dir :file) "\n")))))
     :cd-out ""
     :out (+ :ls-out :cd-out)
-    :cd (* "cd " (/ (*  (+ (-> :cur-dir) (<- "")) (group (some (<- (* (? "/") (? (to "\n")))))))
-                    ,move-dirs
+    :cd (* "cd " (/ (*  (+ (-> :cur-dir) (<- "")) (some (<- (* (? "/") (to "\n")))))
+                    ,move-dir
                     :cur-dir))
     :ls (* "ls")
     :cmd (* "$ " (+ :cd :ls) "\n")
