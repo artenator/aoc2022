@@ -42,8 +42,7 @@
              ["/" ;(slice separate-dirs 0 idx)])
            (range 0 (inc (length separate-dirs)))))))
 
-(defn main
-  []
+(defn main []
   (let [content (slurp "./day7/input.txt")
         [dir-contents] (peg/match pattern content)
         dir-structure (reduce (fn [acc [cur-dir files]]
