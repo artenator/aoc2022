@@ -28,8 +28,7 @@
     :ls (* "ls")
     :cmd (* "$ " (+ :cd :ls) "\n")
     :main (/ (* (some (+ :cmd :out)) -1) ,(fn [& matches]
-                                            (->> (array ;matches)
-                                                 (filter array?))))})
+                                            (filter array? matches)))})
 
 (defn add-to-directory [size tree dir-path]
   (update tree dir-path (fn [cur-size]
