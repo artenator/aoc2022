@@ -37,27 +37,28 @@
          (range (length trees-in-dir))
          trees-in-dir)))
 
+(defn coords [[xs xe] [ys ye]]
+  (seq [y :range [ys ye]
+        x :range [xs xe]]
+    [x y]))
+
 (defn main []
   (let [content (slurp "./day8/input.txt")
-        parsed (peg/match pattern content)]
-    (var visible 0)
+        parsed (peg/match pattern content)
+        y-range [1 (dec (length parsed))]
+        x-range [1 (dec (length (get parsed 0)))]]
     (timer/with-timer
-      (+= visible (+ (* 2 (length parsed))
-                     (* 2 (- (length (get parsed 0)) 2))))
-      (for y 1 (dec (length parsed))
-        (for x 1 (dec (length (get parsed y)))
-          (let [cur-row (get parsed y)
-                val (get cur-row x)]
-            (when (tree-visible? parsed x y)
-              (++ visible))))))
-    (printf "total visible %Q" visible)
+      (let [visible (reduce (fn [acc [x y]]
+                              (if (tree-visible? parsed x y)
+                                (inc acc)
+                                acc))
+                            (+ (* 2 (length parsed))
+                               (* 2 (- (length (get parsed 0)) 2)))
+                            (coords x-range y-range))]
+        (printf "total visible %Q" visible)))
     (timer/with-timer
-      (let [scenic-score @[]]
-        (for y 1 (dec (length parsed))
-          (for x 1 (dec (length (get parsed y)))
-            (let [cur-row (get parsed y)
-                  val (get cur-row x)]
-              (array/push scenic-score (scenic-num parsed x y)))))
+      (let [scenic-score (map (fn [[x y]] (scenic-num parsed x y))
+                              (coords x-range y-range))]
         (printf "total scenic score %Q" (->> scenic-score
                                              (map (partial apply *))
                                              (max-of)))))))
