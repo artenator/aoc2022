@@ -20,8 +20,6 @@
 (defn sprite-location [cycle]
   (from-pairs (map (fn [pos] [pos true]) (range (dec cycle) (+ cycle 2)))))
 
-(setdyn :debug true)
-
 (defn main []
   (let [contents (slurp "./day10/input.txt")
         parsed (peg/match pattern contents)]
@@ -51,5 +49,3 @@
         (printf "part 1: %Q" (sum scores))
         (each row (partition 40 drawing)
           (print (string/join row "")))))))
-
-(debug/fbreak instr-handler)
